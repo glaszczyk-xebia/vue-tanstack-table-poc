@@ -17,48 +17,41 @@ export const useDetailsTable = () => {
   const data = ref(defaultData.value);
 
   const columns = [
-    columnHelper.group({
-      header: "Name",
+    columnHelper.accessor("id", {
+      header: () => "Id",
       footer: (props) => props.column.id,
-      columns: [
-        columnHelper.accessor("firstName", {
-          cell: (info) => info.getValue(),
-          footer: (props) => props.column.id,
-        }),
-        columnHelper.accessor((row) => row.lastName, {
-          id: "lastName",
-          cell: (info) => info.getValue(),
-          header: () => "Last Name",
-          footer: (props) => props.column.id,
-        }),
-      ],
     }),
-    columnHelper.group({
-      header: "Info",
+    columnHelper.accessor("accountNo", {
+      header: "Account No.",
       footer: (props) => props.column.id,
-      columns: [
-        columnHelper.accessor("age", {
-          header: () => "Age",
-          footer: (props) => props.column.id,
-        }),
-        columnHelper.group({
-          header: "More Info",
-          columns: [
-            columnHelper.accessor("visits", {
-              header: () => "Visits",
-              footer: (props) => props.column.id,
-            }),
-            columnHelper.accessor("status", {
-              header: "Status",
-              footer: (props) => props.column.id,
-            }),
-            columnHelper.accessor("progress", {
-              header: "Profile Progress",
-              footer: (props) => props.column.id,
-            }),
-          ],
-        }),
-      ],
+    }),
+    columnHelper.accessor("firstName", {
+      header: "First Name",
+      footer: (props) => props.column.id,
+    }),
+    columnHelper.accessor("lastName", {
+      header: "Last Name",
+      footer: (props) => props.column.id,
+    }),
+    columnHelper.accessor("group", {
+      header: "Group",
+      footer: (props) => props.column.id,
+    }),
+    columnHelper.accessor("amount", {
+      header: "Amount",
+      footer: (props) => props.column.id,
+    }),
+    columnHelper.accessor("dueDate", {
+      header: "Due Date",
+      footer: (props) => props.column.id,
+    }),
+    columnHelper.accessor("status", {
+      header: 'Status',
+      footer: (props) => props.column.id,
+      }),
+    columnHelper.accessor("remaining", {
+      header: 'Remaining',
+      footer: (props) => props.column.id,
     }),
   ];
 
