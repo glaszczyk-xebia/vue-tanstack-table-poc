@@ -1,8 +1,13 @@
+export type PaymentStatus = 'Paid' | 'Unpaid' | 'Partial';
 export type PersonDetails = {
-	firstName: string
-	lastName: string
-	age: number
-	visits: number
-	status: string
-	progress: number
+	id: string;
+	accountNo: string;
+	firstName: string;
+	lastName: string;
+	group: 'Finance' | 'Operations' | 'Sales' | 'Marketing' | 'IT' | 'HR' | 'Legal' | 'Others';
+	description: string;
+	amount: number;
+	dueDate: string;
+	status: PaymentStatus;
+	remaining: number;
 }
