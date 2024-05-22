@@ -1,12 +1,14 @@
+import { getColumnSummary } from "@/utils/getColumnSummary";
+import { useSummaryStore } from "@/stores/summaryTable";
+import type { Summary } from "@/types/Summary";
 import {
   createColumnHelper,
   getCoreRowModel,
+  getFilteredRowModel,
   useVueTable,
 } from "@tanstack/vue-table";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
-import { useSummaryStore } from "@/stores/summaryTable";
-import type { Summary } from "@/types/Summary";
 
 export const useSummaryTable = () => {
   const dataStore = useSummaryStore();
@@ -15,6 +17,7 @@ export const useSummaryTable = () => {
   const columnHelper = createColumnHelper<Summary>();
 
   const data = ref(defaultData.value);
+  const summaryFilter = ref("");
 
   const columns = [
     columnHelper.accessor("date", {
@@ -29,7 +32,7 @@ export const useSummaryTable = () => {
     columnHelper.accessor("amount", {
       header: "Amount",
       cell: (info) => info.getValue(),
-      footer: (props) => props.column.id,
+      footer: (props) => getColumnSummary("amount", props),
     }),
   ];
 
@@ -43,7 +46,13 @@ export const useSummaryTable = () => {
     },
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      get globalFilter() {
+        return summaryFilter.value;
+      },
+    },
   });
-
-  return { summaryTable, rerenderSummaryTable };
+  console.log(summaryTable.getState());
+  return { summaryTable, rerenderSummaryTable, summaryFilter };
 };

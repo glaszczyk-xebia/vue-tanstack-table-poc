@@ -1,7 +1,9 @@
-import type {PersonDetails} from "@/types/PersonDetails";
+import type { PersonDetails } from "@/types/PersonDetails";
+import { getColumnSummary } from "@/utils/getColumnSummary";
 import {
   createColumnHelper,
   getCoreRowModel,
+  getFilteredRowModel,
   useVueTable,
 } from "@tanstack/vue-table";
 import { storeToRefs } from "pinia";
@@ -15,6 +17,7 @@ export const useDetailsTable = () => {
   const columnHelper = createColumnHelper<PersonDetails>();
 
   const data = ref(defaultData.value);
+  const detailsFilter = ref("");
 
   const columns = [
     columnHelper.accessor("id", {
@@ -39,19 +42,19 @@ export const useDetailsTable = () => {
     }),
     columnHelper.accessor("amount", {
       header: "Amount",
-      footer: (props) => props.column.id,
+      footer: (props) => getColumnSummary("amount", props),
     }),
     columnHelper.accessor("dueDate", {
       header: "Due Date",
       footer: (props) => props.column.id,
     }),
     columnHelper.accessor("status", {
-      header: 'Status',
+      header: "Status",
       footer: (props) => props.column.id,
-      }),
+    }),
     columnHelper.accessor("remaining", {
-      header: 'Remaining',
-      footer: (props) => props.column.id,
+      header: "Remaining",
+      footer: (props) => getColumnSummary("remaining", props),
     }),
   ];
 
@@ -65,7 +68,13 @@ export const useDetailsTable = () => {
     },
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      get globalFilter() {
+        return detailsFilter.value;
+      },
+    },
   });
 
-  return { detailsTable, rerenderDetailsTable };
+  return { detailsTable, rerenderDetailsTable, detailsFilter };
 };
