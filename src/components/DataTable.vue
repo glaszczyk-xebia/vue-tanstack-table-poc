@@ -17,12 +17,16 @@ const props = defineProps<DataTableProps>();
           v-for="header in headerGroup.headers"
           :key="header.id"
           :colSpan="header.colSpan"
+          @click="header.column.getToggleSortingHandler()?.($event)"
         >
           <FlexRender
             v-if="!header.isPlaceholder"
             :render="header.column.columnDef.header"
             :props="header.getContext()"
           />
+          {{
+            { asc: " 🔼", desc: " 🔽" }[header.column.getIsSorted() as string]
+          }}
         </th>
       </tr>
     </thead>

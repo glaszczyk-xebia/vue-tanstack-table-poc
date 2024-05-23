@@ -5,6 +5,7 @@ import {
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   useVueTable,
 } from "@tanstack/vue-table";
 import { storeToRefs } from "pinia";
@@ -29,9 +30,12 @@ export const useDetailsTable = () => {
     return filters;
   });
 
+  const sorting = ref<SortingState>([]);
+
   const columns = [
     columnHelper.accessor("id", {
       header: () => "Id",
+      enableSorting: false,
       footer: (props) => props.column.id,
     }),
     columnHelper.accessor("accountNo", {
@@ -79,6 +83,7 @@ export const useDetailsTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
       get globalFilter() {
         return detailsFilter.value;
@@ -86,6 +91,15 @@ export const useDetailsTable = () => {
       get columnFilters() {
         return filtersComputed.value;
       },
+      get sorting() {
+        return sorting.value;
+      },
+    },
+    onSortingChange: (updaterOrValue) => {
+      sorting.value =
+        typeof updaterOrValue === "function"
+          ? updaterOrValue(sorting.value)
+          : updaterOrValue;
     },
   });
 

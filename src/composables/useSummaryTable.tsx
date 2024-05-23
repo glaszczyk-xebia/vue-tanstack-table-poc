@@ -6,6 +6,7 @@ import {
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   useVueTable,
 } from "@tanstack/vue-table";
 import { storeToRefs } from "pinia";
@@ -26,6 +27,8 @@ export const useSummaryTable = () => {
       filters.push({ id: "description", value: descriptionFilter.value });
     return filters;
   });
+
+  const sorting = ref<SortingState>([]);
 
   const columns = [
     columnHelper.accessor("date", {
@@ -58,6 +61,7 @@ export const useSummaryTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
       get globalFilter() {
         return summaryFilter.value;
@@ -65,6 +69,15 @@ export const useSummaryTable = () => {
       get columnFilters() {
         return filtersComputed.value;
       },
+      get sorting() {
+        return sorting.value;
+      },
+    },
+    onSortingChange: (updaterOrValue) => {
+      sorting.value =
+        typeof updaterOrValue === "function"
+          ? updaterOrValue(sorting.value)
+          : updaterOrValue;
     },
   });
   console.log(summaryTable.getState());
