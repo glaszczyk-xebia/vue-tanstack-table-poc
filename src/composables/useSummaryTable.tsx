@@ -29,8 +29,32 @@ export const useSummaryTable = () => {
   });
 
   const sorting = ref<SortingState>([]);
+  const rowSelection = ref<RowSelectionState>({});
 
   const columns = [
+    {
+      id: "select",
+      header: ({ table }: { table: any }) => {
+        return (
+          <input
+            type="checkbox"
+            checked={table.getIsAllRowsSelected()}
+            indeterminate={table.getIsSomeRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          ></input>
+        );
+      },
+      cell: ({ row }: { row: any }) => {
+        return (
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            onChange={row.getToggleSelectedHandler()}
+          ></input>
+        );
+      },
+    },
     columnHelper.accessor("date", {
       header: () => "Date",
       footer: (props) => props.column.id,
@@ -59,6 +83,7 @@ export const useSummaryTable = () => {
       return data.value;
     },
     columns,
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -72,12 +97,21 @@ export const useSummaryTable = () => {
       get sorting() {
         return sorting.value;
       },
+      get rowSelection() {
+        return rowSelection.value;
+      },
     },
     onSortingChange: (updaterOrValue) => {
       sorting.value =
         typeof updaterOrValue === "function"
           ? updaterOrValue(sorting.value)
           : updaterOrValue;
+    },
+    onRowSelectionChange: (updateOrValue) => {
+      rowSelection.value =
+        typeof updateOrValue === "function"
+          ? updateOrValue(rowSelection.value)
+          : updateOrValue;
     },
   });
   console.log(summaryTable.getState());

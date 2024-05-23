@@ -31,7 +31,11 @@ const props = defineProps<DataTableProps>();
       </tr>
     </thead>
     <tbody>
-      <tr v-for="row in props.table.getRowModel().rows" :key="row.id">
+      <tr
+        v-for="row in props.table.getRowModel().rows"
+        :key="row.id"
+        :class="{ selected: row.getIsSelected() }"
+      >
         <td v-for="cell in row.getVisibleCells()" :key="cell.id">
           <FlexRender
             :render="cell.column.columnDef.cell"
@@ -61,4 +65,8 @@ const props = defineProps<DataTableProps>();
   </table>
 </template>
 
-<style scoped></style>
+<style scoped>
+.selected {
+  background-color: #f0f0f0;
+}
+</style>
