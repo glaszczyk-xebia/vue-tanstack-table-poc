@@ -1,3 +1,4 @@
+import HeadCellInput from "@/components/HeadCellInput.vue";
 import { getColumnSummary } from "@/utils/getColumnSummary";
 import { useSummaryStore } from "@/stores/summaryTable";
 import type { Summary } from "@/types/Summary";
@@ -8,7 +9,7 @@ import {
   useVueTable,
 } from "@tanstack/vue-table";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 export const useSummaryTable = () => {
   const dataStore = useSummaryStore();
@@ -18,6 +19,13 @@ export const useSummaryTable = () => {
 
   const data = ref(defaultData.value);
   const summaryFilter = ref("");
+  const descriptionFilter = ref("");
+  const filtersComputed = computed(() => {
+    const filters = [];
+    if (descriptionFilter.value)
+      filters.push({ id: "description", value: descriptionFilter.value });
+    return filters;
+  });
 
   const columns = [
     columnHelper.accessor("date", {
@@ -25,9 +33,12 @@ export const useSummaryTable = () => {
       footer: (props) => props.column.id,
     }),
     columnHelper.accessor("description", {
-      header: "Description",
+      header: () => (
+        <HeadCellInput v-model={descriptionFilter.value}></HeadCellInput>
+      ),
       cell: (info) => info.getValue(),
       footer: (props) => props.column.id,
+      filterFn: "includesString",
     }),
     columnHelper.accessor("amount", {
       header: "Amount",
@@ -51,8 +62,15 @@ export const useSummaryTable = () => {
       get globalFilter() {
         return summaryFilter.value;
       },
+      get columnFilters() {
+        return filtersComputed.value;
+      },
     },
   });
   console.log(summaryTable.getState());
-  return { summaryTable, rerenderSummaryTable, summaryFilter };
+  return {
+    summaryTable,
+    rerenderSummaryTable,
+    summaryFilter,
+  };
 };
