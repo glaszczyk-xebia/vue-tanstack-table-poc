@@ -1,16 +1,20 @@
 import HeadCellInput from "@/components/HeadCellInput.vue";
-import { getColumnSummary } from "@/utils/getColumnSummary";
 import { useSummaryStore } from "@/stores/summaryTable";
 import type { Summary } from "@/types/Summary";
+import { getColumnSummary } from "@/utils/getColumnSummary";
 import {
   createColumnHelper,
+  ExpandedState,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
+  RowSelectionState,
+  SortingState,
   useVueTable,
 } from "@tanstack/vue-table";
 import { storeToRefs } from "pinia";
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 
 export const useSummaryTable = () => {
   const dataStore = useSummaryStore();
@@ -30,6 +34,14 @@ export const useSummaryTable = () => {
 
   const sorting = ref<SortingState>([]);
   const rowSelection = ref<RowSelectionState>({});
+  const expanded = ref<ExpandedState>({});
+
+  const expandedRowData = computed(() => {
+    const expandedKeys = Object.keys(expanded.value);
+    const result = data.value.filter((row) => expandedKeys.includes(row.id));
+    console.log(result);
+    return result;
+  });
 
   const columns = [
     {
@@ -72,6 +84,21 @@ export const useSummaryTable = () => {
       cell: (info) => info.getValue(),
       footer: (props) => getColumnSummary("amount", props),
     }),
+    {
+      id: "expand",
+      header: "Expand",
+      cell: ({ row }: { row: any }) => {
+        return (
+          <button
+            disabled={!row.getCanExpand()}
+            onClick={row.getToggleExpandedHandler()}
+            style={{ cursor: "pointer" }}
+          >
+            {row.getIsExpanded() ? "-" : "+"}
+          </button>
+        );
+      },
+    },
   ];
 
   const rerenderSummaryTable = () => {
@@ -84,9 +111,12 @@ export const useSummaryTable = () => {
     },
     columns,
     enableRowSelection: true,
+    enableExpanding: true,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    // getExpandedRowModel: getExpandedRowModel(),
+    getSubRows: (row) => row.subRows,
     state: {
       get globalFilter() {
         return summaryFilter.value;
@@ -100,6 +130,9 @@ export const useSummaryTable = () => {
       get rowSelection() {
         return rowSelection.value;
       },
+      get expanded() {
+        return expanded.value;
+      },
     },
     onSortingChange: (updaterOrValue) => {
       sorting.value =
@@ -111,6 +144,12 @@ export const useSummaryTable = () => {
       rowSelection.value =
         typeof updateOrValue === "function"
           ? updateOrValue(rowSelection.value)
+          : updateOrValue;
+    },
+    onExpandedChange: (updateOrValue) => {
+      expanded.value =
+        typeof updateOrValue === "function"
+          ? updateOrValue(expanded.value)
           : updateOrValue;
     },
   });

@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import { FlexRender, type Table } from "@tanstack/vue-table";
+import SubRowComponent from "@/components/SubRowComponent.vue";
+import { FlexRender, type Row, type Table } from "@tanstack/vue-table";
+import { computed } from "vue";
+
 type DataTableProps = {
   table: Table<any>;
 };
 const props = defineProps<DataTableProps>();
+
+const rowModel = computed(() => {
+  const result = props.table.getRowModel();
+  console.log(result);
+  return result;
+});
 </script>
 
 <template>
@@ -31,18 +40,21 @@ const props = defineProps<DataTableProps>();
       </tr>
     </thead>
     <tbody>
-      <tr
-        v-for="row in props.table.getRowModel().rows"
-        :key="row.id"
-        :class="{ selected: row.getIsSelected() }"
-      >
-        <td v-for="cell in row.getVisibleCells()" :key="cell.id">
-          <FlexRender
-            :render="cell.column.columnDef.cell"
-            :props="cell.getContext()"
-          />
-        </td>
-      </tr>
+      <template v-for="row in rowModel.rows" :key="row.id">
+        <tr :class="{ selected: row.getIsSelected() }">
+          <td v-for="cell in row.getVisibleCells()" :key="cell.id">
+            <FlexRender
+              :render="cell.column.columnDef.cell"
+              :props="cell.getContext()"
+            />
+          </td>
+        </tr>
+        <tr v-if="row.getIsExpanded() && row.subRows && row.subRows.length">
+          <td :colspan="props.table.getHeaderGroups()[0].headers.length">
+            <SubRowComponent :row="row" />
+          </td>
+        </tr>
+      </template>
     </tbody>
     <tfoot>
       <tr
