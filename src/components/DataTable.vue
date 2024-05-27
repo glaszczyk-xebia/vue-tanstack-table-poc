@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import SubRowComponent from "@/components/SubRowComponent.vue";
-import { FlexRender, type Row, type Table } from "@tanstack/vue-table";
+import { FlexRender, type Table } from "@tanstack/vue-table";
 import { computed } from "vue";
 
 type DataTableProps = {
@@ -9,9 +8,7 @@ type DataTableProps = {
 const props = defineProps<DataTableProps>();
 
 const rowModel = computed(() => {
-  const result = props.table.getRowModel();
-  console.log(result);
-  return result;
+  return props.table.getRowModel();
 });
 </script>
 
@@ -51,7 +48,7 @@ const rowModel = computed(() => {
         </tr>
         <tr v-if="row.getIsExpanded() && row.subRows && row.subRows.length">
           <td :colspan="props.table.getHeaderGroups()[0].headers.length">
-            <SubRowComponent :row="row" />
+            <slot name="nested-row" :data="row"></slot>
           </td>
         </tr>
       </template>

@@ -6,7 +6,6 @@ import {
   createColumnHelper,
   ExpandedState,
   getCoreRowModel,
-  getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   RowSelectionState,
@@ -14,7 +13,7 @@ import {
   useVueTable,
 } from "@tanstack/vue-table";
 import { storeToRefs } from "pinia";
-import { computed, nextTick, ref } from "vue";
+import { computed, ref } from "vue";
 
 export const useSummaryTable = () => {
   const dataStore = useSummaryStore();
@@ -35,13 +34,6 @@ export const useSummaryTable = () => {
   const sorting = ref<SortingState>([]);
   const rowSelection = ref<RowSelectionState>({});
   const expanded = ref<ExpandedState>({});
-
-  const expandedRowData = computed(() => {
-    const expandedKeys = Object.keys(expanded.value);
-    const result = data.value.filter((row) => expandedKeys.includes(row.id));
-    console.log(result);
-    return result;
-  });
 
   const columns = [
     {
@@ -115,7 +107,6 @@ export const useSummaryTable = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    // getExpandedRowModel: getExpandedRowModel(),
     getSubRows: (row) => row.subRows,
     state: {
       get globalFilter() {

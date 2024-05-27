@@ -23,6 +23,7 @@ const getSummary = (): Summary => ({
         "Legal",
         "Others",
       ]),
+      description: faker.lorem.sentence(),
     },
   ],
 });

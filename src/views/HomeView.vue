@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DataTable from "@/components/DataTable.vue";
+import SubRowComponent from "@/components/SubRowComponent.vue";
 import { useDetailsTable } from "@/composables/useDetailsTable";
 import { useSummaryTable } from "@/composables/useSummaryTable";
 
@@ -12,7 +13,11 @@ const { detailsTable, detailsFilter, rerenderDetailsTable } = useDetailsTable();
     <div class="table-wrapper">
       <div class="p-2">
         <input v-model="summaryFilter" placeholder="Filter summary table" />
-        <DataTable :table="summaryTable" />
+        <DataTable :table="summaryTable">
+          <template #nested-row="{ data }">
+            <SubRowComponent :data="data" />
+          </template>
+        </DataTable>
         <div class="h-4" />
         <button @click="rerenderSummaryTable" class="border p-2">
           Rerender
