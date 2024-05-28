@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DataTable from "@/components/DataTable.vue";
 import SubRowComponent from "@/components/SubRowComponent.vue";
+import TablePagination from "@/components/TablePagination.vue";
 import { useDetailsTable } from "@/composables/useDetailsTable";
 import { useSummaryTable } from "@/composables/useSummaryTable";
 
@@ -22,6 +23,7 @@ const { detailsTable, detailsFilter, rerenderDetailsTable } = useDetailsTable();
         <button @click="rerenderSummaryTable" class="border p-2">
           Rerender
         </button>
+        <TablePagination :table="summaryTable" />
       </div>
 
       <div class="p-2">

@@ -7,6 +7,7 @@ import {
   ExpandedState,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   RowSelectionState,
   SortingState,
@@ -34,7 +35,6 @@ export const useSummaryTable = () => {
   const sorting = ref<SortingState>([]);
   const rowSelection = ref<RowSelectionState>({});
   const expanded = ref<ExpandedState>({});
-
   const columns = [
     {
       id: "select",
@@ -107,6 +107,7 @@ export const useSummaryTable = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getSubRows: (row) => row.subRows,
     state: {
       get globalFilter() {
@@ -144,7 +145,7 @@ export const useSummaryTable = () => {
           : updateOrValue;
     },
   });
-  console.log(summaryTable.getState());
+
   return {
     summaryTable,
     rerenderSummaryTable,
