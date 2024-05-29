@@ -23,16 +23,23 @@ const rowModel = computed(() => {
           v-for="header in headerGroup.headers"
           :key="header.id"
           :colSpan="header.colSpan"
-          @click="header.column.getToggleSortingHandler()?.($event)"
         >
-          <FlexRender
-            v-if="!header.isPlaceholder"
-            :render="header.column.columnDef.header"
-            :props="header.getContext()"
-          />
-          {{
-            { asc: " 🔼", desc: " 🔽" }[header.column.getIsSorted() as string]
-          }}
+          <div class="cellContent">
+            <FlexRender
+              v-if="!header.isPlaceholder"
+              :render="header.column.columnDef.header"
+              :props="header.getContext()"
+            />
+            <button
+              @click="header.column.getToggleSortingHandler()?.($event)"
+              class="sortingButton"
+              v-if="header.column.columnDef.enableSorting !== false"
+            >
+              {{
+                { asc: "🔼", desc: "🔽" }[header.column.getIsSorted() as string]
+              }}
+            </button>
+          </div>
         </th>
       </tr>
     </thead>
@@ -77,5 +84,22 @@ const rowModel = computed(() => {
 <style scoped>
 .selected {
   background-color: #f0f0f0;
+}
+
+.cellContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 4px;
+}
+.sortingButton {
+  box-sizing: content-box;
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  padding: 0;
+  border: 0;
+  display: flex;
 }
 </style>

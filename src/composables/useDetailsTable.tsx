@@ -22,11 +22,13 @@ export const useDetailsTable = () => {
   const detailsFilter = ref("");
   const firstName = ref("");
   const lastName = ref("");
+  const group = ref("");
   const filtersComputed = computed(() => {
     const filters = [];
     if (firstName.value)
       filters.push({ id: "firstName", value: firstName.value });
     if (lastName.value) filters.push({ id: "lastName", value: lastName.value });
+    if (group.value) filters.push({ id: "group", value: group.value });
     return filters;
   });
 
@@ -68,6 +70,10 @@ export const useDetailsTable = () => {
       header: "Account No.",
       footer: (props) => props.column.id,
     }),
+    columnHelper.accessor("group", {
+      header: () => <HeadCellInput v-model={group.value}>Group</HeadCellInput>,
+      footer: (props) => props.column.id,
+    }),
     columnHelper.accessor("firstName", {
       header: () => (
         <HeadCellInput v-model={firstName.value}>First name</HeadCellInput>
@@ -78,10 +84,6 @@ export const useDetailsTable = () => {
       header: () => (
         <HeadCellInput v-model={lastName.value}>Last name</HeadCellInput>
       ),
-      footer: (props) => props.column.id,
-    }),
-    columnHelper.accessor("group", {
-      header: "Group",
       footer: (props) => props.column.id,
     }),
     columnHelper.accessor("amount", {
