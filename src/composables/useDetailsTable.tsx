@@ -32,6 +32,8 @@ export const useDetailsTable = () => {
 
   const sorting = ref<SortingState>([]);
   const rowSelection = ref<RowSelectionState>({});
+  const columnVisibility = ref({});
+  const columnOrder = ref<ColumnOrderState>([]);
 
   const columns = [
     {
@@ -67,11 +69,15 @@ export const useDetailsTable = () => {
       footer: (props) => props.column.id,
     }),
     columnHelper.accessor("firstName", {
-      header: () => <HeadCellInput v-model={firstName.value}></HeadCellInput>,
+      header: () => (
+        <HeadCellInput v-model={firstName.value}>First name</HeadCellInput>
+      ),
       footer: (props) => props.column.id,
     }),
     columnHelper.accessor("lastName", {
-      header: () => <HeadCellInput v-model={lastName.value}></HeadCellInput>,
+      header: () => (
+        <HeadCellInput v-model={lastName.value}>Last name</HeadCellInput>
+      ),
       footer: (props) => props.column.id,
     }),
     columnHelper.accessor("group", {
@@ -121,6 +127,12 @@ export const useDetailsTable = () => {
       get rowSelection() {
         return rowSelection.value;
       },
+      get columnVisibility() {
+        return columnVisibility.value;
+      },
+      get columnOrder() {
+        return columnOrder.value;
+      },
     },
     onSortingChange: (updaterOrValue) => {
       sorting.value =
@@ -134,7 +146,29 @@ export const useDetailsTable = () => {
           ? updateOrValue(rowSelection.value)
           : updateOrValue;
     },
+    onColumnOrderChange: (order) => {
+      columnOrder.value = order;
+    },
   });
 
-  return { detailsTable, rerenderDetailsTable, detailsFilter };
+  const toggleColumnVisibility = (column: Column<any, any>) => {
+    columnVisibility.value = {
+      ...columnVisibility.value,
+      [column.id]: !column.getIsVisible(),
+    };
+  };
+
+  const toggleAllColumnsVisibility = () => {
+    detailsTable.getAllLeafColumns().forEach((column) => {
+      toggleColumnVisibility(column);
+    });
+  };
+
+  return {
+    detailsTable,
+    rerenderDetailsTable,
+    toggleColumnVisibility,
+    toggleAllColumnsVisibility,
+    detailsFilter,
+  };
 };

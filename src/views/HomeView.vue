@@ -6,7 +6,13 @@ import { useDetailsTable } from "@/composables/useDetailsTable";
 import { useSummaryTable } from "@/composables/useSummaryTable";
 
 const { summaryTable, summaryFilter, rerenderSummaryTable } = useSummaryTable();
-const { detailsTable, detailsFilter, rerenderDetailsTable } = useDetailsTable();
+const {
+  detailsTable,
+  detailsFilter,
+  rerenderDetailsTable,
+  toggleAllColumnsVisibility,
+  toggleColumnVisibility,
+} = useDetailsTable();
 </script>
 
 <template>
@@ -27,6 +33,35 @@ const { detailsTable, detailsFilter, rerenderDetailsTable } = useDetailsTable();
       </div>
 
       <div class="p-2">
+        <div class="columnSelectorWrapper">
+          <div class="columnGroup">
+            <label>
+              <input
+                type="checkbox"
+                :checked="detailsTable.getIsAllColumnsVisible()"
+                @input="toggleAllColumnsVisibility"
+              />
+              Toggle All
+            </label>
+          </div>
+          <div class="columnGroup">
+            <div
+              v-for="column in detailsTable.getAllLeafColumns()"
+              :key="column.id"
+              class="columnSelector"
+            >
+              <label>
+                <input
+                  type="checkbox"
+                  :checked="column.getIsVisible()"
+                  @input="toggleColumnVisibility(column)"
+                />
+
+                {{ column.id }}
+              </label>
+            </div>
+          </div>
+        </div>
         <input v-model="detailsFilter" placeholder="Filter details table" />
         <DataTable :table="detailsTable" />
         <div class="h-4" />
@@ -67,5 +102,20 @@ tfoot th {
 }
 .table-wrapper {
   display: flex;
+}
+.columnSelectorWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.columnGroup {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+  width: 800px;
+}
+.columnSelector {
+  margin-right: 8px;
+  flex-basis: 150px;
 }
 </style>

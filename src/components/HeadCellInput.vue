@@ -4,7 +4,7 @@ const inputValue = defineModel<string>();
 
 <template>
   <div>
-    Description
+    <slot></slot>
     <input v-model="inputValue" placeholder="Filter" />
   </div>
 </template>

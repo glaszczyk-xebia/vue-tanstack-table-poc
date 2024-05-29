@@ -35,6 +35,7 @@ export const useSummaryTable = () => {
   const sorting = ref<SortingState>([]);
   const rowSelection = ref<RowSelectionState>({});
   const expanded = ref<ExpandedState>({});
+
   const columns = [
     {
       id: "select",
@@ -65,7 +66,9 @@ export const useSummaryTable = () => {
     }),
     columnHelper.accessor("description", {
       header: () => (
-        <HeadCellInput v-model={descriptionFilter.value}></HeadCellInput>
+        <HeadCellInput v-model={descriptionFilter.value}>
+          Description
+        </HeadCellInput>
       ),
       cell: (info) => info.getValue(),
       footer: (props) => props.column.id,
